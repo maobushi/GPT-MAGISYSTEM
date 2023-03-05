@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <!-- Bootstrap CSS -->
+
+    <head>
+        <title>GPT MAGI SYSTEM</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous">
+    
+            <style>
+                body {
+                  background-color: black;
+                  color: orange;
+                  font-family: "MS Mincho", sans-serif;
+                  font-weight: 700;
+                  font-size: 2rem;
+                }
+              
+                h1, h2, h3, h4, h5, h6 {
+                  font-weight: 900;
+                  color: orange;
+                  font-family: "MS Mincho", sans-serif;
+                }
+              
+                .opinion {
+                  font-weight: 900;
+                  color: orange;
+                  font-family: "MS Mincho", sans-serif;
+                  border: 2px solid orange;
+                  padding: 10px;
+                }
+              
+                .opinion p:first-child {
+                  font-size: 2.5rem;
+                  margin: 0;
+                }
+              
+                .result {
+                  font-size: 3rem;
+                  font-weight: 900;
+                  text-align: center;
+                  margin-top: 50px;
+                }
+              
+                .result p {
+                  font-size: 4rem;
+                  margin: 0;
+                }
+
+                #displayopinion
+                {
+                width: 100%;
+                }
+                .input-group {
+                  margin-bottom: 20px;
+                  }
+                  #status-area {
+                    position: fixed;
+                    top: 10px;
+                    left: 10px;
+                }
+                
+                #status-text {
+                    font-weight: bold;
+                }
+              </style>
+              
+              <div class="magi-container">
+                <h1 style="text-align:center">GPT MAGI SYSTEM</h1>
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="ここにテキストを入力してください" id="prompt">
+                  <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button" onclick="getOpinions()">提訴</button>
+                  </span>
+                </div>
+              
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="opinion">
+                      <h3 style="text-align:center">MELCHIOR-1</h3>
+                      <p id="scientistOpinion"></p>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="opinion">
+                      <h3 style="text-align:center">BALTHASAR-2</h3>
+                      <p id="womanOpinion"></p>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="opinion">
+                      <h3 style="text-align:center">CASPER-3</h3>
+                      <p id="motherOpinion"></p>
+                    </div>
+                  </div>
+                </div>
+              
+                <div class="result">
+                  <p id="result"></p>
+                </div>
+              </div>
+              
+        </head>
+        
+        
+        <title>GPT MAGI</title>
+    </head>    
+    <body>
+        
+        <!-- JavaScript code -->
+        
+        <script type="text/javascript">
+            
+            function updateStatus() {
+                var opinions = JSON.parse(this.responseText);
+                var decision = get_overall_decision(opinions);
+                
+                if (decision) {
+                    document.querySelector('#status-text').textContent = decision;
+                }
+            }
+
+            function displayResult(result) {
+                var resultEl = document.getElementById("result");
+                resultEl.innerHTML = result;
+                if (result.includes("賛成")) {
+                    resultEl.style.color = "green";
+                } else if (result.includes("反対")) {
+                    resultEl.style.color = "red";
+                } else {
+                    resultEl.style.color = "orange";
+                }
+                resultEl.style.fontSize = "4rem";
+                resultEl.style.fontWeight = "bold";
+                resultEl.style.textAlign = "center";
+                resultEl.style.marginTop = "50px";
+                resultEl.style.border = "5px solid orange";
+                resultEl.style.padding = "20px";
+            }
+            function getOpinions() {
+                var prompt = document.getElementById("prompt").value;
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/get_opinions", true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (this.status == 200) {
+                        var opinions = JSON.parse(this.responseText);
+                        document.getElementById("scientistOpinion").innerHTML = opinions[0];
+                        document.getElementById("womanOpinion").innerHTML = opinions[1];
+                        document.getElementById("motherOpinion").innerHTML = opinions[2];
+                    }
+                };
+                xhr.send("prompt=" + prompt);
+            }
+        </script>
+    </body>
+</html>
